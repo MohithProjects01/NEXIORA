@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CollegeCompass AI
 
-## Getting Started
+CollegeCompass AI is a production-ready MVP for college discovery, comparison, reviews, saved colleges, and admission prediction. It is built as a full-stack Next.js application with Prisma, PostgreSQL, NextAuth, TanStack Query, React Hook Form, Zod, and Shadcn-style UI primitives.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js 16 App Router, React 19, TypeScript
+- Tailwind CSS 4 with reusable UI components
+- Next.js Route Handlers for backend APIs
+- PostgreSQL with Prisma ORM 7
+- NextAuth.js JWT sessions with credentials auth
+- React Hook Form and Zod validation
+- TanStack Query for client-side fetching, caching, and mutations
+- Vercel and Neon PostgreSQL deployment readiness
+
+## Features
+
+- College discovery with search, filters, sorting, and server-side pagination
+- College detail pages with overview, courses, placements, recruiters, and reviews
+- Authenticated review create, edit, and delete flows
+- Compare up to 3 colleges and save comparisons
+- Admission predictor for JEE Main, KCET, and COMEDK with persisted history
+- Save and remove colleges from a protected dashboard
+- Profile dashboard with user activity summaries
+- Seed data for Indian colleges, courses, reviews, saved colleges, comparisons, and predictions
+
+## Project Structure
+
+```txt
+src/app/              App Router pages, layouts, proxy, and API route handlers
+src/components/       Reusable layout, shared, UI, college, compare, predictor, and review components
+src/features/         Feature-level client flows and React context
+src/hooks/            Client hooks
+src/lib/              Auth, Prisma, validation, HTTP, sanitization, and utilities
+src/services/         Server-side data access and business logic
+src/types/            Shared TypeScript DTOs and NextAuth augmentation
+prisma/               Prisma schema and seed script
+prisma.config.ts      Prisma 7 datasource, schema, and seed configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local` and set:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+DATABASE_URL="postgresql://user:password@host:5432/collegecompass?sslmode=require"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-a-strong-secret"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_NAME="CollegeCompass AI"
+```
 
-## Learn More
+Prisma 7 reads `DATABASE_URL` from `prisma.config.ts`; do not put `url = env("DATABASE_URL")` back into `schema.prisma`.
 
-To learn more about Next.js, take a look at the following resources:
+## Local Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm.cmd install
+npm.cmd run db:generate
+npm.cmd run db:push
+npm.cmd run db:seed
+npm.cmd run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+Demo seeded password:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```txt
+CollegeCompass@123
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Verification
+
+```bash
+npm.cmd run db:generate
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+```
+
+The project avoids external build-time font fetching so production builds work in restricted CI and Vercel environments.
+
+## API Routes
+
+- `GET /api/colleges` with search, filters, sorting, and pagination
+- `GET /api/colleges/[id]`
+- `POST /api/colleges`, `PUT /api/colleges/[id]`, `DELETE /api/colleges/[id]`
+- `POST /api/reviews`, `GET /api/reviews?collegeId=...`
+- `PUT /api/reviews/[id]`, `DELETE /api/reviews/[id]`
+- `POST /api/compare`, `GET /api/compare`
+- `POST /api/predictor`, `GET /api/predictor/history`
+- `POST /api/saved`, `DELETE /api/saved`, `GET /api/saved`
+- `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout`
+
+## Deployment
+
+1. Create a Neon PostgreSQL database.
+2. Add the environment variables above to Vercel.
+3. Deploy the repository to Vercel.
+4. Run migrations/schema sync and seed data from a trusted environment:
+
+```bash
+npm.cmd run db:generate
+npm.cmd run db:push
+npm.cmd run db:seed
+```
+
+For production, replace the development `NEXTAUTH_SECRET`, use Neon SSL, and restrict database credentials to the deployed app.
