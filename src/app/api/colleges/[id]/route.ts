@@ -1,10 +1,10 @@
+import { assertAdmin } from "@/lib/admin";
 import { auth } from "@/lib/auth";
 import {
   created,
   notFound,
   ok,
   serverError,
-  unauthorized,
   zodErrorResponse,
 } from "@/lib/http";
 import { sanitizeStringArray, sanitizeText } from "@/lib/sanitize";
@@ -45,9 +45,10 @@ export async function PUT(
 ) {
   try {
     const session = await auth();
+    const adminError = assertAdmin(session);
 
-    if (!session?.user?.id) {
-      return unauthorized();
+    if (adminError) {
+      return adminError;
     }
 
     const { id } = await context.params;
@@ -84,9 +85,10 @@ export async function DELETE(
 ) {
   try {
     const session = await auth();
+    const adminError = assertAdmin(session);
 
-    if (!session?.user?.id) {
-      return unauthorized();
+    if (adminError) {
+      return adminError;
     }
 
     const { id } = await context.params;

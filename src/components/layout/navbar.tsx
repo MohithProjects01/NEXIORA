@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Menu, Moon, Scale, Sun } from "lucide-react";
 import { useState } from "react";
-import { APP_NAME, NAV_LINKS } from "@/lib/constants";
+import { APP_NAME, getPublicAdminEmails, NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useCompare } from "@/hooks/use-compare";
 import { useTheme } from "@/hooks/use-theme";
@@ -17,6 +17,9 @@ export function Navbar() {
   const { compareIds } = useCompare();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isAdmin = session?.user?.email
+    ? getPublicAdminEmails().includes(session.user.email.toLowerCase())
+    : false;
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-surface-950/85 backdrop-blur">
@@ -61,6 +64,13 @@ export function Navbar() {
               </span>
             ) : null}
           </Link>
+          {isAdmin ? (
+            <Link href="/admin/colleges">
+              <Button variant="outline" size="sm">
+                Admin
+              </Button>
+            </Link>
+          ) : null}
           {session?.user ? (
             <>
               <Link href="/profile">
@@ -111,6 +121,13 @@ export function Navbar() {
               </Link>
             ))}
             <div className="mt-3 flex gap-2">
+              {isAdmin ? (
+                <Link href="/admin/colleges" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" size="sm">
+                    Admin
+                  </Button>
+                </Link>
+              ) : null}
               <Button variant="secondary" size="sm" onClick={toggleTheme}>
                 {theme === "dark" ? "Light Mode" : "Dark Mode"}
               </Button>

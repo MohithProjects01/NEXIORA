@@ -76,6 +76,23 @@ export async function listComparisons(userId: string) {
   );
 }
 
+export async function deleteComparison(userId: string, comparisonId: string) {
+  const comparison = await prisma.comparison.findFirst({
+    where: { id: comparisonId, userId },
+    select: { id: true },
+  });
+
+  if (!comparison) {
+    return false;
+  }
+
+  await prisma.comparison.delete({
+    where: { id: comparisonId },
+  });
+
+  return true;
+}
+
 export async function buildComparisonPreview(collegeIds: string[]) {
   const comparison = {
     id: "preview",

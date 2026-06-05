@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DeleteComparisonButton } from "@/components/compare/delete-comparison-button";
 import { Card } from "@/components/ui/card";
 import type { ComparisonData } from "@/types/comparison";
 
@@ -27,17 +28,24 @@ const rows: Array<{
 export function ComparisonTable({
   comparison,
   title,
+  showDelete = false,
 }: {
   comparison: ComparisonData;
   title?: string;
+  showDelete?: boolean;
 }) {
   return (
     <Card className="overflow-hidden">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-white">{title ?? comparison.title}</h2>
-        <p className="mt-2 text-sm text-surface-400">
-          Compare fees, placements, packages, ownership, location, and offered courses side by side.
-        </p>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-semibold text-white">{title ?? comparison.title}</h2>
+          <p className="mt-2 text-sm text-surface-400">
+            Compare fees, placements, packages, ownership, location, and offered courses side by side.
+          </p>
+        </div>
+        {showDelete && comparison.id !== "preview" ? (
+          <DeleteComparisonButton comparisonId={comparison.id} />
+        ) : null}
       </div>
 
       <div className="overflow-x-auto">

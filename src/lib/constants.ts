@@ -63,6 +63,14 @@ export const NAV_LINKS = [
   { href: "/saved", label: "Saved" },
 ];
 
+export function getPublicAdminEmails() {
+  const raw = process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "demo@collegecompass.ai";
+  return raw
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export const FEATURED_STATS = [
   { label: "Colleges indexed", value: "200+" },
   { label: "Courses tracked", value: "500+" },

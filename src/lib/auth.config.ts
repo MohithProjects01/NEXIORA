@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import { isAdminEmail } from "@/lib/admin";
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -17,6 +18,18 @@ export const authConfig: NextAuthConfig = {
         const redirectUrl = new URL("/login", nextUrl.origin);
         redirectUrl.searchParams.set("callbackUrl", nextUrl.href);
         return Response.redirect(redirectUrl);
+      }
+
+      if (nextUrl.pathname.startsWith("/admin")) {
+        if (!isLoggedIn) {
+          const redirectUrl = new URL("/login", nextUrl.origin);
+          redirectUrl.searchParams.set("callbackUrl", nextUrl.href);
+          return Response.redirect(redirectUrl);
+        }
+
+        if (!isAdminEmail(auth?.user?.email)) {
+          return Response.redirect(new URL("/", nextUrl.origin));
+        }
       }
 
       // Redirect logged-in users away from auth pages

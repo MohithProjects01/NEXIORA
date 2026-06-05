@@ -30,7 +30,11 @@ export default async function ComparePage() {
         <h2 className="text-2xl font-semibold text-white">Saved comparisons</h2>
         {savedComparisons.length ? (
           savedComparisons.map((comparison) => (
-            <ComparisonTable key={comparison.id} comparison={comparison} />
+            <ComparisonTable
+              key={comparison.id}
+              comparison={comparison}
+              showDelete
+            />
           ))
         ) : (
           <EmptyState

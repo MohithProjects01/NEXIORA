@@ -1,10 +1,10 @@
+import { assertAdmin } from "@/lib/admin";
 import { auth } from "@/lib/auth";
 import {
   badRequest,
   created,
   ok,
   serverError,
-  unauthorized,
   zodErrorResponse,
 } from "@/lib/http";
 import { parseArrayParam, parseNumberParam } from "@/lib/query-params";
@@ -63,9 +63,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await auth();
+    const adminError = assertAdmin(session);
 
-    if (!session?.user?.id) {
-      return unauthorized();
+    if (adminError) {
+      return adminError;
     }
 
     const body = await request.json();

@@ -93,12 +93,27 @@ The project avoids external build-time font fetching so production builds work i
 - `POST /api/saved`, `DELETE /api/saved`, `GET /api/saved`
 - `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout`
 
-## Deployment
+## Admin
 
-1. Create a Neon PostgreSQL database.
-2. Add the environment variables above to Vercel.
-3. Deploy the repository to Vercel.
-4. Run migrations/schema sync and seed data from a trusted environment:
+- Admin college management lives at `/admin/colleges`
+- Only emails listed in `ADMIN_EMAILS` / `NEXT_PUBLIC_ADMIN_EMAILS` can access it
+- Seeded demo admin: `demo@collegecompass.ai` / `CollegeCompass@123`
+
+## Deployment (Vercel)
+
+1. Push the repository to GitHub.
+2. Import the project in [Vercel](https://vercel.com/new).
+3. Create a Neon PostgreSQL database and copy the connection string.
+4. Add these environment variables in Vercel:
+   - `DATABASE_URL`
+   - `NEXTAUTH_URL` (your production URL)
+   - `NEXTAUTH_SECRET`
+   - `NEXT_PUBLIC_APP_URL`
+   - `NEXT_PUBLIC_APP_NAME`
+   - `ADMIN_EMAILS`
+   - `NEXT_PUBLIC_ADMIN_EMAILS`
+5. Deploy. `vercel.json` runs `prisma generate` before the production build.
+6. After the first deploy, run schema sync and seed from a trusted environment:
 
 ```bash
 npm.cmd run db:generate
