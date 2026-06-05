@@ -1,4 +1,3 @@
-git push -u origin main
 import { config as loadEnv } from "dotenv";
 import { defineConfig, env } from "prisma/config";
 
